@@ -46,27 +46,18 @@
 
 	var FileHandler = __webpack_require__(1);
 	var fh;
+	var VaultService;
 
 	$(document).ready(function () {
-	    var core = new ImageVault.Client({
-	        core: "http://iv5qa.azurewebsites.net/apiv2",
-	        username: "hackathon",
-	        password: "ImageVault2016"
-	        /*
-	        ,
-	        impersonate_as: "demo",
-	        roles: "webadmins, webeditors"
-	        */
-	    });
+
+	    fh = new FileHandler();
+	    fh.getVaults();
 
 	    $("#uploadBtn").change(function(){
 	        var file = $(this).get(0).files[0];
-	        fh = new FileHandler(file);
+	        fh.addFile(file);
+	        fh.addVault(1);
 	        fh.upload();
-	        // core.postData("uploadservice/upload","Min text", function(d) {
-	        //     alert("Uploaded content to id "+d);
-	        //     core.json("mediacontentservice/storecontentinvault", {})
-	        // });
 	    });
 	    //trigger enter on search form
 	    $("#coreSearchString").keyup(function(event){
@@ -145,16 +136,48 @@
 
 	"use strict";
 
-	var files = [];
+	var core;
 
-	function FileHandler(f) {
-	    files.push(f);
+	var file;
+	var vaultId;
+
+	function FileHandler() {
+	    core = new ImageVault.Client({
+	        core: "http://iv5qa.azurewebsites.net/apiv2",
+	        username: "hackathon",
+	        password: "ImageVault2016"
+	        /*
+	        ,
+	        impersonate_as: "demo",
+	        roles: "webadmins, webeditors"
+	        */
+	    });
+	}
+
+	FileHandler.prototype.addFile = function(f) {
+	    file = f;
+	};
+
+	FileHandler.prototype.getVaults = function() {
+	    core.json("vaultservice/find", {}, function(vaults) {
+	        vaults.forEach(function(vault) {
+	            console.log(vault);
+	        }, this);
+	        // console.log(vaults);
+	    });
+	};
+
+	FileHandler.prototype.addVault = function(id) {
+	    vaultId = id;
 	}
 
 	FileHandler.prototype.upload = function() {
-	    for (var i = 0; i < files.length; i ++) {
-	        console.log(files[i]);
-	    }
+	    // console.log(file);
+	    core.postData("uploadservice/upload", file, function(id) {
+	        core.json("mediacontentservice/storecontentinvault", {"uploadFileId": id, "filename": file.name, "vaultId": vaultId}, function (data) {
+	            console.log(data);
+	        });
+	    });
 	};
 
 	module.exports = FileHandler;
