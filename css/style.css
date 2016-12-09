@@ -16,16 +16,25 @@ body {
     background-repeat: no-repeat;
 }
 
-input {
+#uploadBtn {
     text-align: center;
     border-radius: 5px;
     width: 95%;
     font-size: 20px;
     color: #34343c;
     padding: 5px;
-    margin: 5px;
+    margin-top: 60px;
 }
 select {
     font-size: 30px;
     margin: 5px;
+}
+
+#steps {
+    float: left;
+    max-height: 300px;
+    margin-top: 35px;
+}
+#upload  {
+    float: right;
 }
