@@ -32,6 +32,7 @@ input {
     font-size: 20px;
     color: #34343c;
     padding: 5px;
+
 }
 select {
     font-size: 30px;
@@ -59,4 +60,7 @@ option {
 
 .lightbluebackground {
     background-color: #98d1e6;
+}
+body * {
+   font-family: sans-serif;
 }
