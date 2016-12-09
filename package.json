@@ -1,0 +1,27 @@
+{
+  "name": "imagevault-mobile-interface",
+  "version": "0.0.1",
+  "description": "A mobile interface for file uploads to image vault",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beppek/imagevault-mobile-interface.git"
+  },
+  "keywords": [
+    "imagevault",
+    "js",
+    "jquery"
+  ],
+  "author": "beppek, toubic",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/beppek/imagevault-mobile-interface/issues"
+  },
+  "homepage": "https://github.com/beppek/imagevault-mobile-interface#readme",
+  "devDependencies": {
+    "webpack": "^1.14.0"
+  }
+}

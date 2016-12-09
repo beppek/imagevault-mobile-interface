@@ -10,7 +10,7 @@ $(document).ready(function () {
         */
     });
 
-    $("#uploadTest").click(function(){
+    $("#uploadBtn").click(function(){
         core.postData("uploadservice/upload","Min text", function(d) {
             alert("Uploaded content to id "+d);
             core.json("mediacontentservice/storecontentinvault", {})
