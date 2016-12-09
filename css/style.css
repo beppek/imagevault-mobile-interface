@@ -36,6 +36,7 @@ input {
 select {
     font-size: 30px;
     margin: 5px;
+    background-color: gainsboro;
 }
 
 #steps {
@@ -44,5 +45,5 @@ select {
     margin-top: 35px;
 }
 #upload  {
-    float: right;
+    float: left;
 }
