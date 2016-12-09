@@ -5,32 +5,15 @@ var VaultService;
 var vaults;
 
 $(document).ready(function () {
-
     caller = new IVCaller();
-    caller.getVaults(function(data) {
-        vaults = data;
-        caller.selectVault(vaults[0]);
-        data.forEach(function(vault) {
-            var option = document.createElement("option");
-            option.setAttribute("value", vault.Id);
-            $(option).text(vault.Name);
-            $("#vaults").append(option);
-        });
+    var path = window.location.pathname;
+    var page = path.substring(path.lastIndexOf('/') + 1);
+    if (page === "metadata.html") {
+        metadataPage();
+    } else {
+        uploadPage();
+    }
 
-        $("#vaults").change(function(event){
-            caller.selectVault(event.target.value);
-        });
-
-    });
-
-    $("#uploadBtn").change(function(){
-        var file = $(this).get(0).files[0];
-        caller.addFile(file);
-        caller.upload(function(data) {
-            // console.log(data);
-            window.location.href = "metadata.html?" + data.Id;
-        });
-    });
     //trigger enter on search form
 //     $("#coreSearchString").keyup(function(event){
 //         if(event.keyCode == 13){
@@ -101,3 +84,33 @@ $(document).ready(function () {
 //         });
     // });
 });
+
+function uploadPage() {
+    caller.getVaults(function(data) {
+        vaults = data;
+        caller.selectVault(vaults[0].Id);
+        data.forEach(function(vault) {
+            var option = document.createElement("option");
+            option.setAttribute("value", vault.Id);
+            $(option).text(vault.Name);
+            $("#vaults").append(option);
+        });
+
+        $("#vaults").change(function(event){
+            caller.selectVault(event.target.value);
+        });
+
+    });
+
+    $("#uploadBtn").change(function(){
+        var file = $(this).get(0).files[0];
+        caller.addFile(file);
+        caller.upload(function(data) {
+            window.location.href = "metadata.html?" + data.Id;
+        });
+    });
+}
+
+function metadataPage() {
+
+}

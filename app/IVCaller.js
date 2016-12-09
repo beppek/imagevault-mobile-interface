@@ -33,7 +33,6 @@ IVCaller.prototype.selectVault = function(id) {
 }
 
 IVCaller.prototype.upload = function(callback) {
-    // console.log(file);
     core.postData("uploadservice/upload", file, function(id) {
         core.json("mediacontentservice/storecontentinvault", {"uploadFileId": id, "filename": file.name, "vaultId": vaultId}, function (data) {
             callback(data);
