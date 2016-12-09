@@ -1,3 +1,5 @@
+
+
 $(document).ready(function () {
     var core = new ImageVault.Client({
         core: "http://iv5qa.azurewebsites.net/apiv2",
