@@ -160,10 +160,29 @@
 	function metadataPage() {
 	    var url = window.location.href;
 	    var imgId = url.split("?")[1];
-	    caller.getThumbnail(imgId, function(img) {
+	    caller.getCategories(function(categories) {
+	        categories.forEach(function(category) {
+	            var checkbox = document.createElement("input");
+	            checkbox.setAttribute("type", "checkbox");
+	            checkbox.setAttribute("value", category.Id);
+	            checkbox.setAttribute("name", "category");
+	            checkbox.setAttribute("id", category.Id);
+	            var label = document.createElement("label");
+	            label.htmlFor = category.Id;
+	            label.appendChild(document.createTextNode(category.Name));
+	            $("#checkboxes").append(checkbox);
+	            $("#checkboxes").append(label);
+	            if (category.Categories.length > 0) {
+	                console.log(category.Categories);
+	            }
+	        }, this);
+	    });
+	    caller.getThumbnail(imgId, function(img, vaultId) {
 	        $("#thumbnail").attr("src", "http://iv5qa.azurewebsites.net/" + img.Url);
 	        $("#filename").attr("value", img.Name);
+
 	    });
+	    // caller.getCategories()
 	}
 
 /***/ },
@@ -235,8 +254,15 @@
 	                }
 	    }, function(d) {
 	        var img = d[0];
+	        var vaultId = img.VaultId;
 	        var thumbnail = img.MediaConversions[0];
-	        callback(thumbnail);
+	        callback(thumbnail, vaultId);
+	    });
+	};
+
+	IVCaller.prototype.getCategories = function(callback) {
+	    core.json("CategoryService/Find", {}, function(categories) {
+	        callback(categories);
 	    });
 	}
 

@@ -63,8 +63,15 @@ IVCaller.prototype.getThumbnail = function(imgId, callback) {
                 }
     }, function(d) {
         var img = d[0];
+        var vaultId = img.VaultId;
         var thumbnail = img.MediaConversions[0];
-        callback(thumbnail);
+        callback(thumbnail, vaultId);
+    });
+};
+
+IVCaller.prototype.getCategories = function(callback) {
+    core.json("CategoryService/Find", {}, function(categories) {
+        callback(categories);
     });
 }
 
