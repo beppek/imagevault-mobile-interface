@@ -7,7 +7,7 @@ h1 {
     font-weight: bolder;
     text-shadow: 5px 5px 5px black;
 }
-h2 {
+h2, h3 {
     color: white;
 }
 
@@ -23,5 +23,9 @@ input {
     font-size: 15px;
     background-color: white;
     padding: 5px;
+    margin: 5px;
+}
+select {
+    font-size: 15px;
     margin: 5px;
 }
