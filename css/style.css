@@ -49,3 +49,8 @@ select {
     float: left;
     width: 75%;
 }
+
+.center {
+        display: block;
+        margin: 0 auto;
+}
