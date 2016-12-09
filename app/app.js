@@ -1,25 +1,19 @@
-var FileHandler = require('./FileHandler');
-var fh;
+var IVCaller = require('./IVCaller');
+var caller;
+var VaultService;
+
+var vaults;
 
 $(document).ready(function () {
-    var core = new ImageVault.Client({
-        core: "http://iv5qa.azurewebsites.net/apiv2",
-        username: "hackathon",
-        password: "ImageVault2016"
-        /*
-        ,
-        impersonate_as: "demo",
-        roles: "webadmins, webeditors"
-        */
-    });
+
+    caller = new IVCaller();
+    vaults = caller.getVaults();
 
     $("#uploadBtn").change(function(){
         var file = $(this).get(0).files[0];
-        fh = new FileHandler(file);
-        // core.postData("uploadservice/upload","Min text", function(d) {
-        //     alert("Uploaded content to id "+d);
-        //     core.json("mediacontentservice/storecontentinvault", {})
-        // });
+        caller.addFile(file);
+        caller.selectVault(1);
+        caller.upload();
     });
     //trigger enter on search form
     $("#coreSearchString").keyup(function(event){
