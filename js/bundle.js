@@ -42,7 +42,10 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
+
+	var FileHandler = __webpack_require__(1);
+	var fh;
 
 	$(document).ready(function () {
 	    var core = new ImageVault.Client({
@@ -56,11 +59,14 @@
 	        */
 	    });
 
-	    $("#uploadBtn").click(function(){
-	        core.postData("uploadservice/upload","Min text", function(d) {
-	            alert("Uploaded content to id "+d);
-	            core.json("mediacontentservice/storecontentinvault", {})
-	        });
+	    $("#uploadBtn").change(function(){
+	        var file = $(this).get(0).files[0];
+	        fh = new FileHandler(file);
+	        fh.upload();
+	        // core.postData("uploadservice/upload","Min text", function(d) {
+	        //     alert("Uploaded content to id "+d);
+	        //     core.json("mediacontentservice/storecontentinvault", {})
+	        // });
 	    });
 	    //trigger enter on search form
 	    $("#coreSearchString").keyup(function(event){
@@ -132,6 +138,26 @@
 	        });
 	    });
 	});
+
+/***/ },
+/* 1 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	var files = [];
+
+	function FileHandler(f) {
+	    files.push(f);
+	}
+
+	FileHandler.prototype.upload = function() {
+	    for (var i = 0; i < files.length; i ++) {
+	        console.log(files[i]);
+	    }
+	};
+
+	module.exports = FileHandler;
 
 /***/ }
 /******/ ]);

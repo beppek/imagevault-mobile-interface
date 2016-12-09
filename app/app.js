@@ -1,4 +1,5 @@
-
+var FileHandler = require('./FileHandler');
+var fh;
 
 $(document).ready(function () {
     var core = new ImageVault.Client({
@@ -12,11 +13,13 @@ $(document).ready(function () {
         */
     });
 
-    $("#uploadBtn").click(function(){
-        core.postData("uploadservice/upload","Min text", function(d) {
-            alert("Uploaded content to id "+d);
-            core.json("mediacontentservice/storecontentinvault", {})
-        });
+    $("#uploadBtn").change(function(){
+        var file = $(this).get(0).files[0];
+        fh = new FileHandler(file);
+        // core.postData("uploadservice/upload","Min text", function(d) {
+        //     alert("Uploaded content to id "+d);
+        //     core.json("mediacontentservice/storecontentinvault", {})
+        // });
     });
     //trigger enter on search form
     $("#coreSearchString").keyup(function(event){
