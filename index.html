@@ -6,16 +6,27 @@
 		<script type="text/javascript" src="./IVTest/ImageVault.Client.js"> </script>
 
 		<script type="text/javascript"><!--
+
+
+
+
 		$(document).ready(function () {
 			var core = new ImageVault.Client({
 				core: "http://iv5qa.azurewebsites.net/apiv2",
 				username: "hackathon",
 				password: "ImageVault2016"
 				/*
-				, 
+				,
 				impersonate_as: "demo",
 				roles: "webadmins, webeditors"
 				*/
+			});
+
+			$("#uploadTest").click(function(){
+				core.postData("uploadservice/upload","Min text", function(d) {
+					alert("Uploaded content to id "+d);
+					core.json("mediacontentservice/storecontentinvault", {})
+				});
 			});
 			//trigger enter on search form
 			$("#coreSearchString").keyup(function(event){
@@ -23,6 +34,7 @@
 					$("#coreSearch").click();
 				}
 			});
+
 			$("#coreSearch").click(function () {
 				var searchString = $("#coreSearchString").val();
 				$("#searchResultInfo").text("searching for " + searchString);
@@ -50,21 +62,21 @@
 						Filter: {
 							MetadataDefinitionType : "User"
 						}
-						
+
 					}
-/*					
+/*
 					,
 					{
 						Filter: {
 							MetadataDefinitionType : "System"
 						}
-						
+
 					}
-*/					
+*/
 					]
 				  },
 				  "Filter" : {
-					"SearchString" : searchString 
+					"SearchString" : searchString
 					//, "VaultId" : ["1"]
 				  }
 				}
@@ -75,7 +87,7 @@
 					} else {
 					  $("#searchResultInfo").text("Found " + d.length + " hits.");
 					}
-					
+
 
 					for (var i = 0; i < d.length; i++) {
 					var item = d[i];
@@ -95,5 +107,6 @@
 		<button id="coreSearch">Search media</button>
 		<div id="searchResultInfo"></div>
 		<div id="searchResult"></div>
-	
+		<button id="uploadTest">Upload Test</button>
+
 </body></html>

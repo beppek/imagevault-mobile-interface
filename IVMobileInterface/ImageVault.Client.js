@@ -38,6 +38,9 @@
                     this.authUrl = this.authUrl + "/";
 
         },
+		upload:function(data) {
+			
+		},
         //Calls a service
         //service: [required] the name of the service and method. (ie. MyService/MyMethod)
         //args: [optional] the object that should be passed as argument to the method. (ie if the service signature 
@@ -51,13 +54,19 @@
         html: function (service, args, callback) {
             this._innerCall(service, args, callback, { dataType: 'HTML' });
         },
+		postData: function(service,data,callback) {
+			this._innerCall(service,data,callback,{contentType:'application/octet-stream',processData:false})
+		},
         _innerCall: function (service, args, callback, config) {
             this._lastError = null;
             if (typeof args === "function") {
                 callback = args;
                 args = null;
             }
-            if (typeof args === "object" || (typeof args==="string" && args.length>0 && args.charAt(0)!='{' && args.charAt(0)!='[')) {
+			//make sure processData is set
+			config.processData = config.processData===undefined?true:config.processData;
+			
+            if (config.processData && (typeof args === "object" || (typeof args==="string" && args.length>0 && args.charAt(0)!='{' && args.charAt(0)!='['))) {
                 args = JSON.stringify(args);
             }
             var self = this;
