@@ -36,7 +36,7 @@ input {
 select {
     font-size: 30px;
     margin: 5px;
-    background-color: gainsboro;
+    background-color: #808080;
     color: white;
 }
 option {
