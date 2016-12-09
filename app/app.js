@@ -112,5 +112,10 @@ function uploadPage() {
 }
 
 function metadataPage() {
-
+    var url = window.location.href;
+    var imgId = url.split("?")[1];
+    caller.getThumbnail(imgId, function(img) {
+        $("#thumbnail").attr("src", "http://iv5qa.azurewebsites.net/" + img.Url);
+        // console.log(img);
+    });
 }
