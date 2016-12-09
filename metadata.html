@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>ImageVault</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <script type="text/javascript" src="./IVMobileInterface/jquery-1.6.1.js"> </script>
+    <script type="text/javascript" src="./IVMobileInterface/json2.js"> </script>
+    <script type="text/javascript" src="./IVMobileInterface/ImageVault.Client.js"> </script>
+    <script type="text/javascript" src="./js/bundle.js"></script>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+<form action="" method="post">
+    <br>
+    <h2>Enter metadata:</h2>
+    <br>
+    <h2>Name:</h2>
+    <input type="text" name="name" required>
+    <br>
+    <h2>Description:</h2>
+    <input type="text" name="description" required>
+    <br>
+    <h2>Type:</h2>
+    <br>
+    <select id="type">
+        <option value="text">Text</option>
+        <option value="datetime">Date and time</option>
+        <option value="integer">Integer</option>
+        <option value="yesno">Yes or no</option>
+        <option value="longstring">Long string</option>
+        <option value="decimal">Decimal</option>
+    </select>
+    <input type="submit" value="Apply metadata">
+    <br>
+</form>
+</body>
+</html>
