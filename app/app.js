@@ -116,6 +116,6 @@ function metadataPage() {
     var imgId = url.split("?")[1];
     caller.getThumbnail(imgId, function(img) {
         $("#thumbnail").attr("src", "http://iv5qa.azurewebsites.net/" + img.Url);
-        // console.log(img);
+        $("#filename").attr("value", img.Name);
     });
 }
