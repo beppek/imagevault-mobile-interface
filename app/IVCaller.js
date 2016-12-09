@@ -22,9 +22,9 @@ IVCaller.prototype.addFile = function(f) {
     file = f;
 };
 
-IVCaller.prototype.getVaults = function() {
+IVCaller.prototype.getVaults = function(callback) {
     core.json("vaultservice/find", {}, function(vaults) {
-        return vaults;
+        callback(vaults);
     });
 };
 

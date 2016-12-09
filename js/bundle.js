@@ -44,90 +44,101 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var FileHandler = __webpack_require__(1);
-	var fh;
+	var IVCaller = __webpack_require__(1);
+	var caller;
 	var VaultService;
+
+	var vaults;
 
 	$(document).ready(function () {
 
-	    fh = new FileHandler();
-	    fh.getVaults();
+	    caller = new IVCaller();
+	    caller.getVaults(function(data) {
+	        vaults = data;
+	        console.log(vaults);
+	        data.forEach(function(vault) {
+	            $("#vaults").append("<option value='" + vault.Id + "'>" + vault.Name + "</option>");
+	        }, this);
+	        console.log($("#vaults"));
+	    });
+
+
 
 	    $("#uploadBtn").change(function(){
 	        var file = $(this).get(0).files[0];
-	        fh.addFile(file);
-	        fh.addVault(1);
-	        fh.upload();
+	        caller.addFile(file);
+	        caller.selectVault(1);
+	        caller.upload();
 	    });
 	    //trigger enter on search form
-	    $("#coreSearchString").keyup(function(event){
-	        if(event.keyCode == 13){
-	            $("#coreSearch").click();
-	        }
-	    });
+	//     $("#coreSearchString").keyup(function(event){
+	//         if(event.keyCode == 13){
+	//             $("#coreSearch").click();
+	//         }
+	//     });
 
-	    $("#coreSearch").click(function () {
-	        var searchString = $("#coreSearchString").val();
-	        $("#searchResultInfo").text("searching for " + searchString);
-	        $("#searchResult").text("");
+	//     $("#coreSearch").click(function () {
+	//         var searchString = $("#coreSearchString").val();
+	//         $("#searchResultInfo").text("searching for " + searchString);
+	//         $("#searchResult").text("");
 
-	        core.json("MediaService/Find", {
-	            MediaUrlBase: "http://iv5qa.azurewebsites.net/",
-	            Populate: {
-	            PublishIdentifier: "hackathon",
-	            MediaFormats: [
-	                {
-	                $type : "ImageVault.Common.Data.ThumbnailFormat,ImageVault.Common",
-	                Effects : [
-	                {
-	                    $type : "ImageVault.Common.Data.Effects.ResizeEffect,ImageVault.Common",
-	                    "Width" : 200,
-	                    "Height" : 200,
-	                    "ResizeMode" : "ScaleToFill"
-	                    }
-	                ],
-	                }
-	            ],
-	            Metadata: [
-	            {
-	                Filter: {
-	                    MetadataDefinitionType : "User"
-	                }
+	//         core.json("MediaService/Find", {
+	//             MediaUrlBase: "http://iv5qa.azurewebsites.net/",
+	//             Populate: {
+	//             PublishIdentifier: "hackathon",
+	//             MediaFormats: [
+	//                 {
+	//                 $type : "ImageVault.Common.Data.ThumbnailFormat,ImageVault.Common",
+	//                 Effects : [
+	//                 {
+	//                     $type : "ImageVault.Common.Data.Effects.ResizeEffect,ImageVault.Common",
+	//                     "Width" : 200,
+	//                     "Height" : 200,
+	//                     "ResizeMode" : "ScaleToFill"
+	//                     }
+	//                 ],
+	//                 }
+	//             ],
+	//             Metadata: [
+	//             {
+	//                 Filter: {
+	//                     MetadataDefinitionType : "User"
+	//                 }
 
-	            }
-	/*
-	            ,
-	            {
-	                Filter: {
-	                    MetadataDefinitionType : "System"
-	                }
+	//             }
+	// /*
+	//             ,
+	//             {
+	//                 Filter: {
+	//                     MetadataDefinitionType : "System"
+	//                 }
 
-	            }
-	*/
-	            ]
-	            },
-	            "Filter" : {
-	            "SearchString" : searchString
-	            //, "VaultId" : ["1"]
-	            }
-	        }
-	        , function (d) {
-	//					$("#searchResult").html(JSON.stringify(d));
-	            if (d == null || d.length == null) {
-	                $("#searchResultInfo").text("Nothing found!");
-	            } else {
-	                $("#searchResultInfo").text("Found " + d.length + " hits.");
-	            }
+	//             }
+	// */
+	//             ]
+	//             },
+	//             "Filter" : {
+	//             "SearchString" : searchString
+	//             //, "VaultId" : ["1"]
+	//             }
+	//         }
+	//         , function (d) {
+	// //					$("#searchResult").html(JSON.stringify(d));
+	//             if (d == null || d.length == null) {
+	//                 $("#searchResultInfo").text("Nothing found!");
+	//             } else {
+	//                 $("#searchResultInfo").text("Found " + d.length + " hits.");
+	//             }
 
 
-	            for (var i = 0; i < d.length; i++) {
-	            var item = d[i];
-	            var thumbnail = item.MediaConversions[0];
-	                $("#searchResult").append("<div style='float:left;text-align:center;'><img src='" + thumbnail.Url + "'/><br/>"+item.Name+"</div>");
-	            }
+	//             for (var i = 0; i < d.length; i++) {
+	//             var item = d[i];
+	//             var thumbnail = item.MediaConversions[0];
+	//                 $("#searchResult").append("<div style='float:left;text-align:center;'><img src='" + thumbnail.Url + "'/><br/>"+item.Name+"</div>");
+	//             }
 
-	        });
-	    });
+	//         });
+	    // });
 	});
 
 /***/ },
@@ -141,7 +152,7 @@
 	var file;
 	var vaultId;
 
-	function FileHandler() {
+	function IVCaller() {
 	    core = new ImageVault.Client({
 	        core: "http://iv5qa.azurewebsites.net/apiv2",
 	        username: "hackathon",
@@ -154,33 +165,30 @@
 	    });
 	}
 
-	FileHandler.prototype.addFile = function(f) {
+	IVCaller.prototype.addFile = function(f) {
 	    file = f;
 	};
 
-	FileHandler.prototype.getVaults = function() {
+	IVCaller.prototype.getVaults = function(callback) {
 	    core.json("vaultservice/find", {}, function(vaults) {
-	        vaults.forEach(function(vault) {
-	            console.log(vault);
-	        }, this);
-	        // console.log(vaults);
+	        callback(vaults);
 	    });
 	};
 
-	FileHandler.prototype.addVault = function(id) {
+	IVCaller.prototype.selectVault = function(id) {
 	    vaultId = id;
 	}
 
-	FileHandler.prototype.upload = function() {
+	IVCaller.prototype.upload = function() {
 	    // console.log(file);
 	    core.postData("uploadservice/upload", file, function(id) {
 	        core.json("mediacontentservice/storecontentinvault", {"uploadFileId": id, "filename": file.name, "vaultId": vaultId}, function (data) {
-	            console.log(data);
+	            return data;
 	        });
 	    });
 	};
 
-	module.exports = FileHandler;
+	module.exports = IVCaller;
 
 /***/ }
 /******/ ]);
