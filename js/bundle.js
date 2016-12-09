@@ -158,7 +158,12 @@
 	}
 
 	function metadataPage() {
-
+	    var url = window.location.href;
+	    var imgId = url.split("?")[1];
+	    caller.getThumbnail(imgId, function(img) {
+	        $("#thumbnail").attr("src", "http://iv5qa.azurewebsites.net/" + img.Url);
+	        // console.log(img);
+	    });
 	}
 
 /***/ },
@@ -206,6 +211,34 @@
 	        });
 	    });
 	};
+
+	IVCaller.prototype.getThumbnail = function(imgId, callback) {
+	    core.json("MediaService/Find", {
+	        Populate: {
+	            PublishIdentifier: "hackathon",
+	            MediaFormats: [
+	                {
+	                $type : "ImageVault.Common.Data.ThumbnailFormat,ImageVault.Common",
+	                Effects : [
+	                {
+	                    $type : "ImageVault.Common.Data.Effects.ResizeEffect,ImageVault.Common",
+	                    "Width" : 200,
+	                    "Height" : 200,
+	                    "ResizeMode" : "ScaleToFit"
+	                    }
+	                ],
+	                }
+	            ]
+	        },
+	        Filter : {
+	                "Id" : [imgId]
+	                }
+	    }, function(d) {
+	        var img = d[0];
+	        var thumbnail = img.MediaConversions[0];
+	        callback(thumbnail);
+	    });
+	}
 
 	module.exports = IVCaller;
 

@@ -40,4 +40,32 @@ IVCaller.prototype.upload = function(callback) {
     });
 };
 
+IVCaller.prototype.getThumbnail = function(imgId, callback) {
+    core.json("MediaService/Find", {
+        Populate: {
+            PublishIdentifier: "hackathon",
+            MediaFormats: [
+                {
+                $type : "ImageVault.Common.Data.ThumbnailFormat,ImageVault.Common",
+                Effects : [
+                {
+                    $type : "ImageVault.Common.Data.Effects.ResizeEffect,ImageVault.Common",
+                    "Width" : 200,
+                    "Height" : 200,
+                    "ResizeMode" : "ScaleToFit"
+                    }
+                ],
+                }
+            ]
+        },
+        Filter : {
+                "Id" : [imgId]
+                }
+    }, function(d) {
+        var img = d[0];
+        var thumbnail = img.MediaConversions[0];
+        callback(thumbnail);
+    });
+}
+
 module.exports = IVCaller;
