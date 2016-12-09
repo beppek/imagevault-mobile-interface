@@ -55,20 +55,27 @@
 	    caller = new IVCaller();
 	    caller.getVaults(function(data) {
 	        vaults = data;
-	        console.log(vaults);
+	        caller.selectVault(vaults[0]);
 	        data.forEach(function(vault) {
-	            $("#vaults").append("<option value='" + vault.Id + "'>" + vault.Name + "</option>");
-	        }, this);
-	        console.log($("#vaults"));
+	            var option = document.createElement("option");
+	            option.setAttribute("value", vault.Id);
+	            $(option).text(vault.Name);
+	            $("#vaults").append(option);
+	        });
+
+	        $("#vaults").change(function(event){
+	            caller.selectVault(event.target.value);
+	        });
+
 	    });
-
-
 
 	    $("#uploadBtn").change(function(){
 	        var file = $(this).get(0).files[0];
 	        caller.addFile(file);
-	        caller.selectVault(1);
-	        caller.upload();
+	        caller.upload(function(data) {
+	            // console.log(data);
+	            window.location.href = "metadata.html?" + data.Id;
+	        });
 	    });
 	    //trigger enter on search form
 	//     $("#coreSearchString").keyup(function(event){
@@ -179,11 +186,11 @@
 	    vaultId = id;
 	}
 
-	IVCaller.prototype.upload = function() {
+	IVCaller.prototype.upload = function(callback) {
 	    // console.log(file);
 	    core.postData("uploadservice/upload", file, function(id) {
 	        core.json("mediacontentservice/storecontentinvault", {"uploadFileId": id, "filename": file.name, "vaultId": vaultId}, function (data) {
-	            return data;
+	            callback(data);
 	        });
 	    });
 	};
