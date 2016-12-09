@@ -39,7 +39,9 @@ select {
     background-color: gainsboro;
     color: white;
 }
-
+option {
+    color: white;
+}
 #steps {
     float: left;
     max-height: 300px;
@@ -57,8 +59,4 @@ select {
 
 .lightbluebackground {
     background-color: #98d1e6;
-}
-
-.lightbluetext  {
-   color: #98d1e6;
 }
