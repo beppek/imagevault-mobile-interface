@@ -120,8 +120,12 @@ function metadataPage() {
     caller.getThumbnail(imgId, function(img, vaultId) {
         $("#thumbnail").attr("src", "http://iv5qa.azurewebsites.net/" + img.Url);
         $("#filename").attr("value", img.Name);
-
+        caller.getMetadataDefinitions(vaultId, function(metaDefinitions) {
+            printMetadataDefinitions(metaDefinitions);
+        });
     });
+
+
 }
 
 function printCategories(categories) {
@@ -136,8 +140,24 @@ function printCategories(categories) {
         label.appendChild(document.createTextNode(category.Name));
         $("#checkboxes").append(checkbox);
         $("#checkboxes").append(label);
-        if (category.Categories.length > 0) {
-            console.log(category.Categories);
+        //TODO: Handle child categories
+
+        // if (category.Categories.length > 0) {
+        //     console.log(category.Categories);
+        // }
+    });
+}
+
+function printMetadataDefinitions(metaDefinitions) {
+    metaDefinitions.forEach(function(metaDefinition) {
+        var meta = metaDefinition.MetadataDefinition;
+        var metaInput = document.createElement("input");
+        if (metaDefinition.IsMandatory == true) {
+            metaInput.required = true;
         }
-    }, this);
+        metaInput.setAttribute("id", meta.Id);
+        metaInput.setAttribute("placeholder", meta.Name);
+        metaInput.setAttribute("type", "text");
+        $("#metadata").append(metaInput);
+    });
 }

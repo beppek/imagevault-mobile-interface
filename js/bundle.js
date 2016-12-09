@@ -161,28 +161,51 @@
 	    var url = window.location.href;
 	    var imgId = url.split("?")[1];
 	    caller.getCategories(function(categories) {
-	        categories.forEach(function(category) {
-	            var checkbox = document.createElement("input");
-	            checkbox.setAttribute("type", "checkbox");
-	            checkbox.setAttribute("value", category.Id);
-	            checkbox.setAttribute("name", "category");
-	            checkbox.setAttribute("id", category.Id);
-	            var label = document.createElement("label");
-	            label.htmlFor = category.Id;
-	            label.appendChild(document.createTextNode(category.Name));
-	            $("#checkboxes").append(checkbox);
-	            $("#checkboxes").append(label);
-	            if (category.Categories.length > 0) {
-	                console.log(category.Categories);
-	            }
-	        }, this);
+	        printCategories(categories);
 	    });
 	    caller.getThumbnail(imgId, function(img, vaultId) {
 	        $("#thumbnail").attr("src", "http://iv5qa.azurewebsites.net/" + img.Url);
 	        $("#filename").attr("value", img.Name);
-
+	        caller.getMetadataDefinitions(vaultId, function(metaDefinitions) {
+	            printMetadataDefinitions(metaDefinitions);
+	        });
 	    });
-	    // caller.getCategories()
+	}
+
+	function printCategories(categories) {
+	    categories.forEach(function(category) {
+	        var checkbox = document.createElement("input");
+	        checkbox.setAttribute("type", "checkbox");
+	        checkbox.setAttribute("value", category.Id);
+	        checkbox.setAttribute("name", "category");
+	        checkbox.setAttribute("id", category.Id);
+	        var label = document.createElement("label");
+	        label.htmlFor = category.Id;
+	        label.appendChild(document.createTextNode(category.Name));
+	        $("#checkboxes").append(checkbox);
+	        $("#checkboxes").append(label);
+	        //TODO: Handle child categories
+
+	        // if (category.Categories.length > 0) {
+	        //     console.log(category.Categories);
+	        // }
+	    });
+	}
+
+	function printMetadataDefinitions(metaDefinitions) {
+	    metaDefinitions.forEach(function(metaDefinition) {
+	        var meta = metaDefinition.MetadataDefinition;
+	        var metaInput = document.createElement("input");
+	        if (metaDefinition.IsMandatory == true) {
+	            console.log("mandatory");
+	            metaInput.required = true;
+	        }
+	        metaInput.setAttribute("id", meta.Id);
+	        metaInput.setAttribute("placeholder", meta.Name);
+	        metaInput.setAttribute("type", "text");
+	        $("#metadata").append(metaInput);
+	    });
+	    console.log(metaDefinitions);
 	}
 
 /***/ },
@@ -264,7 +287,21 @@
 	    core.json("CategoryService/Find", {}, function(categories) {
 	        callback(categories);
 	    });
-	}
+	};
+
+	IVCaller.prototype.getMetadataDefinitions = function(vaultId, callback) {
+	    core.json("VaultService/Find", {
+	        Populate: {
+	            PublishIdentifier: "hackathon",
+	            MetadataDefinitions: true
+	        },
+	        Filter : {
+	                "Id" : vaultId
+	                }
+	    }, function(d) {
+	        callback(d[0].MetadataDefinitions);
+	    });
+	};
 
 	module.exports = IVCaller;
 
