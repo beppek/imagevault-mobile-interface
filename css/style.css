@@ -34,7 +34,7 @@ input {
     padding: 5px;
 
 }
-select {
+select, label {
     font-size: 30px;
     margin: 5px;
     background-color: #808080;
@@ -43,6 +43,10 @@ select {
 option {
     color: white;
 }
+
+
+
+
 #steps {
     float: left;
     max-height: 300px;
