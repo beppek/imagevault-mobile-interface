@@ -13,26 +13,17 @@
 </head>
 <body>
     <img src="http://imagevault.se/assets/images/logo.png" alt="imagevault">
+    <h1>Enter metadata:</h1>
+    <img class="center" src="http://i.imgur.com/q1w8CCh.png" alt="uploaded image" id="thumbnail">
+    <h2>Filename:</h2>
+    <input id="filename" type="text" name="name" required>
+    <h2>Categories:</h2>
+    <div id="checkboxes">
+    </div>
+    <h2>Metadata:</h2>
+    <div id="metadata">
+    </div>
     <br>
-    <br>
-    <form action="" method="post">
-        <br>
-        <h1>Enter metadata:</h1>
-        <br>
-        <img class="center" src="http://i.imgur.com/q1w8CCh.png" alt="uploaded image" id="thumbnail">
-        <h2>Filename:</h2>
-        <input id="filename" type="text" name="name" required>
-        <br>
-        <h2>Categories:</h2>
-        <div id="checkboxes">
-        </div>
-        <br>
-        <br>
-        <h2>Metadata:</h2>
-        <div id="metadata">
-        <br>
-        <input class="lightbluebackground" type="submit" value="Save">
-        <br>
-    </form>
+    <input class="lightbluebackground" type="submit" id="save" value="Save">
 </body>
 </html>

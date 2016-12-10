@@ -63,8 +63,46 @@ IVCaller.prototype.getThumbnail = function(imgId, callback) {
                 }
     }, function(d) {
         var img = d[0];
+        var vaultId = img.VaultId;
         var thumbnail = img.MediaConversions[0];
-        callback(thumbnail);
+        callback(thumbnail, vaultId);
+    });
+};
+
+IVCaller.prototype.getCategories = function(callback) {
+    core.json("CategoryService/Find", {}, function(categories) {
+        callback(categories);
+    });
+};
+
+IVCaller.prototype.getMetadataDefinitions = function(vaultId, callback) {
+    core.json("VaultService/Find", {
+        Populate: {
+            PublishIdentifier: "hackathon",
+            MetadataDefinitions: true
+        },
+        Filter : {
+                "Id" : vaultId
+                }
+    }, function(d) {
+        callback(d[0].MetadataDefinitions);
+    });
+};
+
+IVCaller.prototype.save = function(id, name, metadata, categories, callback) {
+    var saveObj = {
+        mediaItems: [
+        {
+            Id: id,
+            Name: name,
+            Categories:categories,
+            Metadata: metadata
+        }
+        ],
+        saveOptions: 7
+    };
+    core.json("mediaservice/save", saveObj, function(data, error) {
+        callback(error);
     });
 }
 
