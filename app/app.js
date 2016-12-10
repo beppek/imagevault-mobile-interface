@@ -3,6 +3,7 @@ var caller;
 var VaultService;
 
 var vaults;
+var imgId;
 
 $(document).ready(function () {
     caller = new IVCaller();
@@ -13,76 +14,6 @@ $(document).ready(function () {
     } else {
         uploadPage();
     }
-
-    //trigger enter on search form
-//     $("#coreSearchString").keyup(function(event){
-//         if(event.keyCode == 13){
-//             $("#coreSearch").click();
-//         }
-//     });
-
-//     $("#coreSearch").click(function () {
-//         var searchString = $("#coreSearchString").val();
-//         $("#searchResultInfo").text("searching for " + searchString);
-//         $("#searchResult").text("");
-
-//         core.json("MediaService/Find", {
-//             MediaUrlBase: "http://iv5qa.azurewebsites.net/",
-//             Populate: {
-//             PublishIdentifier: "hackathon",
-//             MediaFormats: [
-//                 {
-//                 $type : "ImageVault.Common.Data.ThumbnailFormat,ImageVault.Common",
-//                 Effects : [
-//                 {
-//                     $type : "ImageVault.Common.Data.Effects.ResizeEffect,ImageVault.Common",
-//                     "Width" : 200,
-//                     "Height" : 200,
-//                     "ResizeMode" : "ScaleToFill"
-//                     }
-//                 ],
-//                 }
-//             ],
-//             Metadata: [
-//             {
-//                 Filter: {
-//                     MetadataDefinitionType : "User"
-//                 }
-
-//             }
-// /*
-//             ,
-//             {
-//                 Filter: {
-//                     MetadataDefinitionType : "System"
-//                 }
-
-//             }
-// */
-//             ]
-//             },
-//             "Filter" : {
-//             "SearchString" : searchString
-//             //, "VaultId" : ["1"]
-//             }
-//         }
-//         , function (d) {
-// //					$("#searchResult").html(JSON.stringify(d));
-//             if (d == null || d.length == null) {
-//                 $("#searchResultInfo").text("Nothing found!");
-//             } else {
-//                 $("#searchResultInfo").text("Found " + d.length + " hits.");
-//             }
-
-
-//             for (var i = 0; i < d.length; i++) {
-//             var item = d[i];
-//             var thumbnail = item.MediaConversions[0];
-//                 $("#searchResult").append("<div style='float:left;text-align:center;'><img src='" + thumbnail.Url + "'/><br/>"+item.Name+"</div>");
-//             }
-
-//         });
-    // });
 });
 
 function uploadPage() {
@@ -102,7 +33,7 @@ function uploadPage() {
 
     });
 
-    $("#uploadBtn").change(function(){
+    $("#uploadBtn").change(function() {
         var file = $(this).get(0).files[0];
         caller.addFile(file);
         caller.upload(function(data) {
@@ -113,19 +44,19 @@ function uploadPage() {
 
 function metadataPage() {
     var url = window.location.href;
-    var imgId = url.split("?")[1];
+    imgId = url.split("?")[1];
     caller.getCategories(function(categories) {
         printCategories(categories);
     });
     caller.getThumbnail(imgId, function(img, vaultId) {
-        $("#thumbnail").attr("src", "http://iv5qa.azurewebsites.net/" + img.Url);
+        $("#thumbnail").attr("src", "http://iv5qa.azurewebsites.net" + img.Url);
         $("#filename").attr("value", img.Name);
         caller.getMetadataDefinitions(vaultId, function(metaDefinitions) {
             printMetadataDefinitions(metaDefinitions);
         });
     });
 
-
+    $("#save").click(saveImage);
 }
 
 function printCategories(categories) {
@@ -158,6 +89,45 @@ function printMetadataDefinitions(metaDefinitions) {
         metaInput.setAttribute("id", meta.Id);
         metaInput.setAttribute("placeholder", meta.Name);
         metaInput.setAttribute("type", "text");
+        metaInput.setAttribute("data-metadatatype", meta.MetadataType);
         $("#metadata").append(metaInput);
     });
+}
+
+function saveImage() {
+    var filename = $("#filename").val();
+    var metadata = [];
+    var categories = [];
+
+    var metaInputs = $("#metadata").find("input");
+    var i;
+    for (i = 0; i < metaInputs.length; i += 1) {
+        var metadataType = getMetadataType(parseInt(metaInputs[i].getAttribute("data-metadatatype")));
+        var data = {$type: metadataType, MetadataDefinitionId: parseInt(metaInputs[i].id), Value: metaInputs[i].value};
+        metadata.push(data);
+    }
+    $("input:checkbox:checked").each(function() {
+        var cData = {Id: parseInt(this.id)};
+        categories.push(cData);
+    });
+    caller.save(parseInt(imgId), filename, metadata, categories, function() {
+        // alert("you uploaded the image");
+    });
+}
+
+function getMetadataType(typeId) {
+    switch (typeId) {
+        case 1:
+            return "ImageVault.Common.Data.MetadataString,ImageVault.Common";
+        case 2:
+            return "ImageVault.Common.Data.MetadataDateTime,ImageVault.Common";
+        case 3:
+            return "ImageVault.Common.Data.MetadataInteger,ImageVault.Common";
+        case 4:
+            return "ImageVault.Common.Data.MetadataBoolean,ImageVault.Common";
+        case 5:
+            return "ImageVault.Common.Data.MetadataLongString,ImageVault.Common";
+        case 6:
+            return "ImageVault.Common.Data.MetadataDecimal,ImageVault.Common";
+    }
 }

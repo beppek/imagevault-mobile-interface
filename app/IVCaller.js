@@ -89,4 +89,24 @@ IVCaller.prototype.getMetadataDefinitions = function(vaultId, callback) {
     });
 };
 
+IVCaller.prototype.save = function(id, name, metadata, categories, callback) {
+    var saveObj = {
+        mediaItems: [
+        {
+            Id: id,
+            Name: name,
+            Categories:categories,
+            Metadata: metadata
+        }
+        ],
+        saveOptions: 7
+    };
+    core.json("mediaservice/save", saveObj, function(data, error) {
+        // callback();
+        if (error) {
+            console.log(error);
+        }
+    });
+}
+
 module.exports = IVCaller;
