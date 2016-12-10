@@ -87,6 +87,7 @@ function createCheckbox(category) {
     var label = document.createElement("label");
     label.htmlFor = category.Id;
     label.appendChild(document.createTextNode(category.Name));
+    label.setAttribute("class", "center");
     $("#checkboxes").append(checkbox);
     $("#checkboxes").append(label);
 }
