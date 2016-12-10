@@ -102,10 +102,7 @@ IVCaller.prototype.save = function(id, name, metadata, categories, callback) {
         saveOptions: 7
     };
     core.json("mediaservice/save", saveObj, function(data, error) {
-        // callback();
-        if (error) {
-            console.log(error);
-        }
+        callback(error);
     });
 }
 

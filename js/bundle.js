@@ -95,7 +95,7 @@
 	        printCategories(categories);
 	    });
 	    caller.getThumbnail(imgId, function(img, vaultId) {
-	        $("#thumbnail").attr("src", "http://iv5qa.azurewebsites.net/" + img.Url);
+	        $("#thumbnail").attr("src", "http://iv5qa.azurewebsites.net" + img.Url);
 	        $("#filename").attr("value", img.Name);
 	        caller.getMetadataDefinitions(vaultId, function(metaDefinitions) {
 	            printMetadataDefinitions(metaDefinitions);
@@ -107,22 +107,34 @@
 
 	function printCategories(categories) {
 	    categories.forEach(function(category) {
-	        var checkbox = document.createElement("input");
-	        checkbox.setAttribute("type", "checkbox");
-	        checkbox.setAttribute("value", category.Id);
-	        checkbox.setAttribute("name", "category");
-	        checkbox.setAttribute("id", category.Id);
-	        var label = document.createElement("label");
-	        label.htmlFor = category.Id;
-	        label.appendChild(document.createTextNode(category.Name));
-	        $("#checkboxes").append(checkbox);
-	        $("#checkboxes").append(label);
-	        //TODO: Handle child categories
+	        createCheckbox(category);
+	        if (category.Categories.length > 0) {
+	            var childCategories = category.Categories;
+	            childCategories.forEach(function(child) {
+	                createCheckbox(child);
+	                if (child.Categories.length > 0) {
+	                    var grandChildren = child.Categories;
+	                    grandChildren.forEach(function(grandChild) {
+	                        createCheckbox(grandChild);
+	                    });
+	                }
+	            });
+	        }
 
-	        // if (category.Categories.length > 0) {
-	        //     console.log(category.Categories);
-	        // }
 	    });
+	}
+
+	function createCheckbox(category) {
+	    var checkbox = document.createElement("input");
+	    checkbox.setAttribute("type", "checkbox");
+	    checkbox.setAttribute("value", category.Id);
+	    checkbox.setAttribute("name", "category");
+	    checkbox.setAttribute("id", category.Id);
+	    var label = document.createElement("label");
+	    label.htmlFor = category.Id;
+	    label.appendChild(document.createTextNode(category.Name));
+	    $("#checkboxes").append(checkbox);
+	    $("#checkboxes").append(label);
 	}
 
 	function printMetadataDefinitions(metaDefinitions) {
@@ -156,8 +168,12 @@
 	        var cData = {Id: parseInt(this.id)};
 	        categories.push(cData);
 	    });
-	    caller.save(parseInt(imgId), filename, metadata, categories, function() {
-	        // alert("you uploaded the image");
+	    caller.save(parseInt(imgId), filename, metadata, categories, function(error) {
+	        if (!error) {
+	            alert("you uploaded the image");
+	        } else {
+	            alert("something went wrong");
+	        }
 	    });
 	}
 
@@ -286,10 +302,7 @@
 	        saveOptions: 7
 	    };
 	    core.json("mediaservice/save", saveObj, function(data, error) {
-	        // callback();
-	        if (error) {
-	            console.log(error);
-	        }
+	        callback(error);
 	    });
 	}
 
